@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
     <head>
         <meta charset="UTF-8" />
-        <title>Login - Sophie Bluel - Architecte d'intérieur</title>
+        <title>Sophie Bluel - Architecte d'intérieur</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,5 +13,46 @@
         <meta name="description" content="" />
         <link rel="stylesheet" href="./assets/style.css" />
     </head>
-    <body></body>
+    <body id="body">
+        <header id="header">
+            <a href="./index.html"
+                ><h1>Sophie Bluel <span>Architecte d'intérieur</span></h1></a
+            >
+            <nav>
+                <ul>
+                    <li>projets</li>
+                    <li>contact</li>
+                    <li class="login__page">login</li>
+                    <li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main id="main">
+            <section id="form__login">
+                <h2>Log In</h2>
+                <form class="form" action="#" method="post">
+                    <p class="form__login__errortxt"></p>
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" />
+                    <label for="password">Mot de passe</label>
+                    <input type="password" name="password" id="password" />
+                    <input type="submit" value="Se connecter" />
+                </form>
+                <div class="form__login__pwdtxt">
+                    <a href="#"><p>Mot de passe oublié</p></a>
+                </div>
+            </section>
+        </main>
+
+        <footer id="footer">
+            <nav>
+                <ul>
+                    <li>Mentions Légales</li>
+                </ul>
+            </nav>
+        </footer>
+
+        <script defer src="../FrontEnd/assets/js/login.js"></script>
+    </body>
 </html>

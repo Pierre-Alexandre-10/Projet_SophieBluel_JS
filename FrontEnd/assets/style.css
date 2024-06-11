@@ -128,17 +128,40 @@ table {
     border-spacing: 0;
 }
 /** end reset css**/
-body {
+
+header,
+main {
     max-width: 1140px;
     margin: auto;
     font-family: "Work Sans";
     font-size: 14px;
 }
+/* body {
+    max-width: 1140px;
+    margin: auto;
+    font-family: "Work Sans";
+    font-size: 14px;
+} */
+
+body {
+    background-color: #fffef8;
+}
+
 header {
     display: flex;
     justify-content: space-between;
-    margin: 50px 0;
 }
+
+.header a {
+    color: black;
+    text-decoration: none;
+}
+
+.header h1,
+nav {
+    margin-top: 50px;
+}
+
 section {
     margin: 50px 0;
 }
@@ -180,6 +203,7 @@ li:hover {
 #introduction {
     display: flex;
     align-items: center;
+    margin-top: 139px;
 }
 #introduction figure {
     flex: 1;
@@ -202,8 +226,7 @@ li:hover {
 }
 #portfolio h2 {
     text-align: center;
-    margin-bottom: 1em;
-    margin-bottom: 51px;
+    margin-top: 139px;
 }
 .portfolio__gallery {
     width: 100%;
@@ -217,7 +240,7 @@ li:hover {
     width: 100%;
 }
 #contact {
-    width: 50%;
+    width: 379px;
     margin: auto;
 }
 #contact > * {
@@ -256,12 +279,22 @@ input[type="submit"] {
     width: 180px;
     text-align: center;
     border-radius: 60px;
+    border: 1px solid var(#1d6154);
 }
+
+/* footer {
+    border: 1px solid red;
+} */
 
 footer nav ul {
     display: flex;
     justify-content: flex-end;
-    margin: 2em;
+    align-items: center;
+    background-color: #fff;
+    height: 6vh;
+    font-family: "Work Sans";
+    font-size: 14px;
+    padding-right: 107px;
 }
 
 /********* Mise en forme partie filtres ********/
@@ -283,26 +316,138 @@ footer nav ul {
     font-weight: 700;
     border-color: #1d6154;
     color: #1d6154;
-    background-color: #fff;
+    background-color: #fffef8;
 }
-/* .filter__card {
-    border: 1px solid;
-    margin: 0 10px;
-    padding: 9px 25px;
-    border-radius: 60px;
-    font-weight: 700;
-    border-color: #1d6154;
-    color: #1d6154;
-    background-color: #fff;
-} */
 
 .active__filters {
-    border: 1px solid;
-    margin: 0 10px;
+    /* margin: 0 10px;
     padding: 9px 25px;
     border-radius: 60px;
-    font-weight: 700;
-    border-color: #1d6154;
+    font-weight: 700; */
+    border: 1px solid #1d6154 !important;
+    color: white !important;
+    background-color: #1d6154 !important;
+}
+
+/* --------------- FORMULAIRE LOGIN --------------- */
+
+* {
+    box-sizing: border-box;
+}
+
+#email,
+#password {
+    width: 100%;
+    height: 31px;
+}
+
+#form__login {
+    width: 379px;
+    margin: auto;
+}
+#form__login > * {
+    text-align: center;
+}
+#form__login h2 {
+    margin-bottom: 20px;
+}
+#form__login form {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+
+#form__login form label {
+    margin-bottom: 7px;
+}
+
+#form__login input {
+    height: 50px;
+    font-size: 1.2em;
+    border: none;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+#form__login label {
+    margin: 2em 0 1em 0;
+}
+
+.form__login__pwdtxt {
+    text-align: center;
+}
+
+.form__login__pwdtxt a {
+    color: black;
+}
+
+#body {
+    padding-top: 0;
+    height: 100vh;
+    background-color: #fffef8;
+}
+
+#header {
+    height: 8vh;
+    display: flex;
+    align-items: end;
+}
+
+#header a {
+    text-decoration: none;
+}
+
+#main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 85vh;
+}
+
+input[value="Se connecter"] {
+    margin-bottom: 28px;
+}
+
+#footer {
+    height: 1vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: "Work Sans";
+    font-size: 14px;
+    background-color: #fff;
+}
+
+.form__login__errortxt {
+    display: flex;
+    justify-content: center;
+    color: red;
+}
+
+.input__error {
+    border: 1px solid red !important;
+}
+
+.login__page {
+    font-weight: 600 !important;
+}
+
+.edit__mode__style {
+    width: 100%;
+    height: 59px;
+    background-color: black;
     color: white;
-    background-color: #1d6154;
+    margin-top: 0;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.edit__mode__style p {
+    font-family: "Work Sans";
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.portfolio__title {
+    display: inline;
 }

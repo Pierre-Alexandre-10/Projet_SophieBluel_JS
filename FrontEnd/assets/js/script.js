@@ -7,7 +7,7 @@ let gallery = document.querySelector(".portfolio__gallery"); // Utiliser querySe
 async function dataFetch(url, param) {
     try {
         let response = await fetch(url); // Récupération obets avec la méthode fetch
-        return await response.json(); // Retourne la réponse en jso
+        return await response.json(); // Retourne la réponse en json
     } catch (error) {
         console.error("Error :", error);
         param.innerText = "Erreur : Impossible de récupérer les données";
@@ -57,8 +57,6 @@ let filters = document.querySelector(".portfolio__filters");
 async function displayFilters() {
     let listFilters = await dataFetch("http://localhost:5678/api/categories", filters); // Récupération response.json
     let listWorks = await dataFetch("http://localhost:5678/api/works");
-    let buttonFilter = document.querySelectorAll("portfolio__filters button");
-    console.log(buttonFilter);
     //-------------------
     let nav = document.createElement("nav"); // Création nav dans le DOM
     let ul = document.createElement("ul"); // Création ul dans le DOM
@@ -73,10 +71,8 @@ async function displayFilters() {
     all.appendChild(allButton);
     //-------------------
     // Gestion du bouton TOUS
-    allButton.addEventListener("click", () => {
-        allButton.classList.add("active__filters");
-        // allButton.classList.remove("portfolio__filters button");
-        // allButton.classList.add("active__filters");
+    allButton.addEventListener("click", (e) => {
+        buttonStyle(e);
         gallery.innerHTML = "";
         displayWorks();
     });
@@ -89,11 +85,8 @@ async function displayFilters() {
         li.appendChild(button); // Insérer les button dans le li en tant qu'enfant
         button.setAttribute("filter__id", filtersNav.id); // Insère Id de l'API pour chaque filter
         // Gestion des boutons au click et du syle
-        button.addEventListener("click", () => {
-            document
-                .querySelector("portfolio__filters button")
-                ?.classList.remove("portfolio__filters button");
-            button.classList.add("active__filters");
+        button.addEventListener("click", (e) => {
+            buttonStyle(e);
             gallery.innerHTML = "";
             let filterId = button.getAttribute("filter__id");
             if (filterId !== "0") {
@@ -109,51 +102,48 @@ async function displayFilters() {
 }
 displayFilters();
 
-// async function testDisplayFilters() {
-//     let listFilters = await dataFetch("http://localhost:5678/api/categories", filters);
-//     let listWorks = await dataFetch("http://localhost:5678/api/works");
-//     //--------------
-//     let nav = document.createElement("nav");
-//     let ul = document.createElement("ul");
-//     let li = document.createElement("li");
-//     let button = document.createElement("button");
-//     button.innerText = "Tous";
-//     //--------------
-//     filters.appendChild(nav);
-//     nav.appendChild(ul);
-//     ul.appendChild(li);
-//     li.appendChild(button);
-//     //---------------
-//     listFilters.filter((filtersNav) => {
-//         let li = document.createElement("li");
-//         let button = document.createElement("button");
-//         ul.appendChild(li);
-//         li.appendChild(button);
-//         button.textContent = filtersNav.name;
-//     });
+async function buttonStyle(e) {
+    let targetButton = e.target;
+    document.querySelector(".active__filters")?.classList.remove("active__filters"); // (? : Opérateur optionnel)
+    targetButton.classList.add("active__filters");
+}
 
-//     console.log(button, buttonText);
-// }
-// testDisplayFilters();
+/*********************** USER CONNECTED **************************/
+async function indexLogin() {
+    let body = document.querySelector("body");
+    let loginTxt = document.querySelector(".login");
+    let filters = document.querySelector(".portfolio__filters");
+    let gallery = document.querySelector(".portfolio__gallery");
+    let portfolio = document.querySelector("#portfolio");
+    let title = document.querySelector("#portfolio h2");
+    let userLogged = window.sessionStorage.userLogged;
 
-// async function setActiveButton(param) {
-//     let activeButton = null;
-//     if (activeButton) {
-//         activeButton.style.color = "";
-//         activeButton.style.backgroundColor = "";
-//     }
-//     // Mettre à jour la référence au nouveau bouton actif
-//     activeButton = param;
-//     param.style.color = "white";
-//     param.style.backgroundColor = "#1d6154";
-// }
-// setActiveButton();
+    if (userLogged === "true") {
+        let section = document.createElement("section");
+        body.prepend(section);
+        section.classList.add("edit__mode__style");
+        let i = document.createElement("i");
+        i.classList.add("fa-regular", "fa-pen-to-square");
+        section.appendChild(i);
+        let p = document.createElement("p");
+        p.innerHTML = "&nbsp;Mode édition";
+        section.appendChild(p);
+        loginTxt.textContent = "logout";
+        filters.style.display = "none";
+        gallery.style.marginTop = "92px";
 
-// let activeButton = null;
-// if (activeButton) {
-//     activeButton.style.color = "";
-//     activeButton.style.backgroundColor = "";
-// }
-// activeButton = allButton;
-// allButton.style.color = "white";
-// allButton.style.backgroundColor = "#1d6154";
+        loginTxt.addEventListener("click", () => {
+            window.sessionStorage.userLogged = "false";
+        });
+    }
+}
+indexLogin();
+
+// let div = document.createElement("div");
+// let test = document.createElement("i");
+// test.classList.add("fa-regular", "fa-pen-to-square");
+// portfolio.insertBefore(div, portfolio.firstChild);
+// div.classList.add("portfolio__title");
+// div.appendChild(title);
+// div.appendChild(test);
+/*************************** MODALE *********************/
