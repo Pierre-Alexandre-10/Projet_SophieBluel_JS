@@ -85,7 +85,31 @@
                 </ul>
             </nav>
         </footer>
-
+        <section class="modal__section__add">
+            <div class="modal__section__add__block">
+                <div class="modal__section__add__font">
+                    <span><i class="fa-solid fa-arrow-left"></i></span>
+                    <span><i class="fa-solid fa-xmark"></i></span>
+                </div>
+                <p class="modal__title">Ajout photo</p>
+                <form action="#" class="modal__section__add__form">
+                    <div class="modal__section__add__form__preview">
+                        <span><i class="fa-regular fa-image"></i></span>
+                        <label for="file">+ Ajouter photo</label>
+                        <input type="file" id="file" name="image" />
+                        <p>jpg, png : 4mo max</p>
+                        <img src="#" alt="Aperçu de l'image" />
+                    </div>
+                    <label class="title" for="title">Titre</label>
+                    <input type="text" id="title" name="title" />
+                    <label class="category" for="category">Catégorie</label>
+                    <select name="category" id="category"></select>
+                    <div class="gray__line"></div>
+                    <input class="valid__button" type="submit" value="Valider" />
+                    <!-- <button class="valid__button">Valider</button> -->
+                </form>
+            </div>
+        </section>
         <script src="./assets/js/script.js"></script>
     </body>
 </html>

@@ -32,7 +32,9 @@ async function login() {
             })
             // .then((data) => console.log(data))
             .then((data) => {
-                if (data.token) {
+                if (data.token && data.userId) {
+                    window.sessionStorage.token = data.token;
+                    window.sessionStorage.userId = data.userId;
                     window.sessionStorage.userLogged = true;
                     window.location.href = "./index.html";
                 }

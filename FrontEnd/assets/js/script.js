@@ -37,7 +37,7 @@ async function displayWorks() {
 }
 displayWorks();
 
-async function createWorks(work) {
+async function createWorks(param) {
     let figure = document.createElement("figure");
     let img = document.createElement("img");
     let figcaption = document.createElement("figcaption");
@@ -46,8 +46,8 @@ async function createWorks(work) {
     figure.appendChild(img);
     figure.appendChild(figcaption);
     // Sélection des éléments à afficher sur la page
-    img.src = work.imageUrl;
-    figcaption.textContent = work.title;
+    img.src = param.imageUrl;
+    figcaption.textContent = param.title;
 }
 
 /************** FILTRES CATEGORIES ************/
@@ -109,41 +109,221 @@ async function buttonStyle(e) {
 }
 
 /*********************** USER CONNECTED **************************/
-async function indexLogin() {
+
+async function indexStyleLogin() {
+    let userLogged = window.sessionStorage.userLogged;
     let body = document.querySelector("body");
     let loginTxt = document.querySelector(".login");
     let filters = document.querySelector(".portfolio__filters");
     let gallery = document.querySelector(".portfolio__gallery");
     let portfolio = document.querySelector("#portfolio");
     let title = document.querySelector("#portfolio h2");
-    let userLogged = window.sessionStorage.userLogged;
 
     if (userLogged === "true") {
         let section = document.createElement("section");
         body.prepend(section);
         section.classList.add("edit__mode__style");
+        /*---------------------------------------*/
         let i = document.createElement("i");
         i.classList.add("fa-regular", "fa-pen-to-square");
         section.appendChild(i);
+        /*---------------------------------------*/
         let p = document.createElement("p");
         p.innerHTML = "&nbsp;Mode édition";
         section.appendChild(p);
+        /*---------------------------------------*/
         loginTxt.textContent = "logout";
         filters.style.display = "none";
         gallery.style.marginTop = "92px";
+        title.style.width = "60%";
+        title.style.textAlign = "end";
+        /*---------------------------------------*/
+        let div = document.createElement("div");
+        portfolio.insertBefore(div, portfolio.firstChild);
+        div.appendChild(title);
+        /*---------------------------------------*/
+        let modify = document.createElement("i");
+        modify.classList.add("fa-regular", "fa-pen-to-square");
+        modify.classList.add("modify");
+        div.appendChild(modify);
+        div.classList.add("portfolio__title");
+        /*---------------------------------------*/
+        let modifyButton = document.createElement("button");
+        div.appendChild(modifyButton);
+        modifyButton.textContent = "modifier";
+        modifyButton.classList.add("modifyButton");
+        modifyTxtGlobal = modifyButton;
+        /*---------------------------------------*/
 
         loginTxt.addEventListener("click", () => {
             window.sessionStorage.userLogged = "false";
+            window.sessionStorage.token = "";
+            window.sessionStorage.userId = "";
         });
     }
 }
-indexLogin();
+indexStyleLogin();
 
-// let div = document.createElement("div");
-// let test = document.createElement("i");
-// test.classList.add("fa-regular", "fa-pen-to-square");
-// portfolio.insertBefore(div, portfolio.firstChild);
-// div.classList.add("portfolio__title");
-// div.appendChild(title);
-// div.appendChild(test);
 /*************************** MODALE *********************/
+
+async function displayModal() {
+    let body = document.querySelector("body");
+
+    let section = document.createElement("section");
+    section.classList.add("modal__section");
+    body.appendChild(section);
+    /*----------------------------------*/
+    let div = document.createElement("div");
+    div.classList.add("modal__window");
+    section.appendChild(div);
+    /*----------------------------------*/
+    let span = document.createElement("span");
+    div.appendChild(span);
+    /*----------------------------------*/
+    let i = document.createElement("i");
+    i.classList.add("fa-solid", "fa-xmark");
+    span.appendChild(i);
+    /*----------------------------------*/
+    let p = document.createElement("p");
+    p.classList.add("gallery__txt");
+    p.innerText = "Galerie photo";
+    div.appendChild(p);
+    /*----------------------------------*/
+    let modal = document.createElement("div");
+    modal.classList.add("modal__block");
+    div.appendChild(modal);
+    /*----------------------------------*/
+    let button = document.createElement("button");
+    button.textContent = "Ajouter une photo";
+    button.classList.add("button__modal");
+    div.appendChild(button);
+    /*----------------------------------*/
+    modifyTxtGlobal.addEventListener("click", () => {
+        section.style.display = "flex";
+        i.addEventListener("click", () => {
+            section.style.display = "none";
+        });
+    });
+
+    section.addEventListener("click", (e) => {
+        if (e.target.className == "modal__section") {
+            section.style.display = "none";
+        }
+    });
+}
+displayModal();
+
+async function displayWorksModal() {
+    let modal = document.querySelector(".modal__block");
+    modal.innerHTML = "";
+    let works = await dataFetch("http://localhost:5678/api/works");
+    works.forEach((work) => {
+        let figure = document.createElement("figure");
+        let img = document.createElement("img");
+        let span = document.createElement("span");
+        span.classList.add("trashcan__font");
+        let trashFont = document.createElement("i");
+        trashFont.classList.add("fa-solid", "fa-trash-can");
+        modal.appendChild(figure);
+        figure.appendChild(span);
+        figure.appendChild(img);
+        span.appendChild(trashFont);
+        trashFont.id = work.id;
+        img.src = work.imageUrl;
+    });
+}
+displayWorksModal();
+
+async function addModalWork() {
+    let addButton = document.querySelector(".button__modal");
+    let modalAdd = document.querySelector(".modal__section__add");
+    let modal = document.querySelector(".modal__section");
+    let arrowLeft = document.querySelector(".fa-arrow-left");
+    let xmark = document.querySelector(".modal__section__add__font .fa-xmark");
+
+    addButton.addEventListener("click", () => {
+        modal.style.display = "none";
+        modalAdd.style.display = "flex";
+    });
+
+    arrowLeft.addEventListener("click", () => {
+        modal.style.display = "flex";
+        modalAdd.style.display = "none";
+    });
+
+    xmark.addEventListener("click", () => {
+        modalAdd.style.display = "none";
+    });
+
+    modalAdd.addEventListener("click", (e) => {
+        if (e.target.className == "modal__section__add") {
+            modalAdd.style.display = "none";
+        }
+    });
+}
+addModalWork();
+
+async function previewImg() {
+    let previewImg = document.querySelector(".modal__section__add__form__preview img");
+    let inputFile = document.querySelector(".modal__section__add__form__preview input");
+    let labelFile = document.querySelector(".modal__section__add__form__preview label");
+    let i = document.querySelector(".modal__section__add__form__preview .fa-image");
+    let p = document.querySelector(".modal__section__add__form__preview p");
+
+    inputFile.addEventListener("change", () => {
+        let file = inputFile.files[0];
+        console.log(file);
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = "flex";
+                labelFile.style.display = "none";
+                i.style.display = "none";
+                p.style.display = "none";
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+previewImg();
+
+async function getCategoryModal() {
+    let select = document.querySelector(".modal__section__add__form #category");
+    let categorys = await dataFetch("http://localhost:5678/api/categories");
+    categorys.forEach((category) => {
+        let option = document.createElement("option");
+        option.value = category.id;
+        option.textContent = category.name;
+        select.appendChild(option);
+    });
+}
+getCategoryModal();
+
+function postMethodImg() {
+    let form = document.querySelector(".modal__section__add__form");
+    let authToken = window.sessionStorage.token;
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        let formData = new FormData(form);
+        let data = Object.fromEntries(formData);
+
+        fetch("http://localhost:5678/api/works", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
+            },
+            body: data,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                displayWorksModal();
+                displayWorks();
+            })
+            .catch((error) => console.log(error));
+    });
+}
+postMethodImg();
