@@ -684,7 +684,7 @@ li {
     border: 1px solid #b3b3b3;
 }
 
-.valid__button {
+.modal__section__add__form input[value="Valider"] {
     width: 237px;
     height: 36px;
     border-radius: 60px;
@@ -692,5 +692,16 @@ li {
     border: 0;
     color: #fff;
     background-color: rgba(167, 167, 167, 1);
+    font-size: 14px;
+}
+
+.valid__form__button[value="Valider"] {
+    width: 237px;
+    height: 36px;
+    border-radius: 60px;
+    margin: auto;
+    border: 0;
+    color: #fff !important;
+    background-color: #1d6154 !important;
     font-size: 14px;
 }

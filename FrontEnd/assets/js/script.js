@@ -1,67 +1,53 @@
 /**************** WORKS  *****************/
 
 // Récupération de la class présent dans le HTML
-let gallery = document.querySelector(".portfolio__gallery"); // Utiliser querySelector et non querySelectorAll
+let gallery = document.querySelector(".portfolio__gallery");
 
 // Création de la function Json
 async function dataFetch(url, param) {
     try {
-        let response = await fetch(url); // Récupération obets avec la méthode fetch
-        return await response.json(); // Retourne la réponse en json
+        let response = await fetch(url);
+        return await response.json();
     } catch (error) {
         console.error("Error :", error);
-        param.innerText = "Erreur : Impossible de récupérer les données";
+        param.innerText = "Erreur : Récupération de donnée API échoué.";
         param.style.display = "flex";
         param.style.justifyContent = "center";
     }
 }
 
-// Création function affichage
-async function displayWorks() {
-    // Création variable pour récupérer la response.json
-    let listWorks = await dataFetch("http://localhost:5678/api/works", gallery);
-    // Création de la boucle pour parcourir les objets
-    listWorks.forEach((works) => {
-        // Création des balises sémantiques dans le DOM
-        let figure = document.createElement("figure");
-        let img = document.createElement("img");
-        let figcaption = document.createElement("figcaption");
-        // Mise en place de la hiérarchie Parent/Enfant
-        gallery.appendChild(figure);
-        figure.appendChild(img);
-        figure.appendChild(figcaption);
-        // Sélection des éléments à afficher sur la page
-        img.src = works.imageUrl;
-        figcaption.textContent = works.title;
-    });
-}
-displayWorks();
-
 async function createWorks(param) {
     let figure = document.createElement("figure");
+    figure.setAttribute("id", "workGallery-" + param.id);
     let img = document.createElement("img");
     let figcaption = document.createElement("figcaption");
-    // Mise en place de la hiérarchie Parent/Enfant
     gallery.appendChild(figure);
     figure.appendChild(img);
     figure.appendChild(figcaption);
-    // Sélection des éléments à afficher sur la page
     img.src = param.imageUrl;
     figcaption.textContent = param.title;
 }
+
+async function displayWorks() {
+    let listWorks = await dataFetch("http://localhost:5678/api/works", gallery);
+    listWorks.forEach((works) => {
+        createWorks(works);
+    });
+}
+displayWorks();
 
 /************** FILTRES CATEGORIES ************/
 
 let filters = document.querySelector(".portfolio__filters");
 
 async function displayFilters() {
-    let listFilters = await dataFetch("http://localhost:5678/api/categories", filters); // Récupération response.json
+    let listFilters = await dataFetch("http://localhost:5678/api/categories", filters);
     let listWorks = await dataFetch("http://localhost:5678/api/works");
     //-------------------
-    let nav = document.createElement("nav"); // Création nav dans le DOM
-    let ul = document.createElement("ul"); // Création ul dans le DOM
-    filters.appendChild(nav); // Insérer la nav dans la class en tant qu'enfant
-    nav.appendChild(ul); // Insérer le ul dans la nav en tant qu'enfant
+    let nav = document.createElement("nav");
+    let ul = document.createElement("ul");
+    filters.appendChild(nav);
+    nav.appendChild(ul);
     //-------------------
     let all = document.createElement("li");
     let allButton = document.createElement("button");
@@ -78,13 +64,12 @@ async function displayFilters() {
     });
     // Gestion des boutons de catégorie provenant de l'API
     listFilters.forEach((filtersNav) => {
-        let li = document.createElement("li"); //  Création de la balise li
-        let button = document.createElement("button"); //  Création de la balise button
-        button.textContent = filtersNav.name; // Insérer le contenue de l'API (name)
-        ul.appendChild(li); // Insérer les li dans le ul en tant qu'enfant
-        li.appendChild(button); // Insérer les button dans le li en tant qu'enfant
-        button.setAttribute("filter__id", filtersNav.id); // Insère Id de l'API pour chaque filter
-        // Gestion des boutons au click et du syle
+        let li = document.createElement("li");
+        let button = document.createElement("button");
+        button.textContent = filtersNav.name;
+        ul.appendChild(li);
+        li.appendChild(button);
+        button.setAttribute("filter__id", filtersNav.id);
         button.addEventListener("click", (e) => {
             buttonStyle(e);
             gallery.innerHTML = "";
@@ -168,6 +153,7 @@ indexStyleLogin();
 
 async function displayModal() {
     let body = document.querySelector("body");
+    let authToken = window.sessionStorage.userLogged;
 
     let section = document.createElement("section");
     section.classList.add("modal__section");
@@ -198,12 +184,14 @@ async function displayModal() {
     button.classList.add("button__modal");
     div.appendChild(button);
     /*----------------------------------*/
-    modifyTxtGlobal.addEventListener("click", () => {
-        section.style.display = "flex";
-        i.addEventListener("click", () => {
-            section.style.display = "none";
+    if (authToken === "true") {
+        modifyTxtGlobal.addEventListener("click", () => {
+            section.style.display = "flex";
+            i.addEventListener("click", () => {
+                section.style.display = "none";
+            });
         });
-    });
+    }
 
     section.addEventListener("click", (e) => {
         if (e.target.className == "modal__section") {
@@ -219,6 +207,7 @@ async function displayWorksModal() {
     let works = await dataFetch("http://localhost:5678/api/works");
     works.forEach((work) => {
         let figure = document.createElement("figure");
+        figure.setAttribute("id", "work-" + work.id);
         let img = document.createElement("img");
         let span = document.createElement("span");
         span.classList.add("trashcan__font");
@@ -231,8 +220,35 @@ async function displayWorksModal() {
         trashFont.id = work.id;
         img.src = work.imageUrl;
     });
+    deleteWorks();
 }
 displayWorksModal();
+
+async function deleteWorks() {
+    let trashFont = document.querySelectorAll(".fa-trash-can");
+    let authToken = window.sessionStorage.token;
+
+    trashFont.forEach((trash) => {
+        trash.addEventListener("click", (e) => {
+            e.preventDefault();
+            let trashId = trash.id;
+            fetch("http://localhost:5678/api/works" + "/" + trashId, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                },
+            })
+                .then((response) => console.log(response.status))
+                .then((data) => {
+                    console.log("Supression effectué");
+                    let work = document.getElementById("work-" + trashId);
+                    let workGallery = document.getElementById("workGallery-" + trashId);
+                    work.remove();
+                    workGallery.remove();
+                });
+        });
+    });
+}
 
 async function addModalWork() {
     let addButton = document.querySelector(".button__modal");
@@ -269,6 +285,7 @@ async function previewImg() {
     let labelFile = document.querySelector(".modal__section__add__form__preview label");
     let i = document.querySelector(".modal__section__add__form__preview .fa-image");
     let p = document.querySelector(".modal__section__add__form__preview p");
+    let form = document.querySelector(".modal__section__add__form");
 
     inputFile.addEventListener("change", () => {
         let file = inputFile.files[0];
@@ -286,6 +303,7 @@ async function previewImg() {
         }
     });
 }
+
 previewImg();
 
 async function getCategoryModal() {
@@ -303,27 +321,59 @@ getCategoryModal();
 function postMethodImg() {
     let form = document.querySelector(".modal__section__add__form");
     let authToken = window.sessionStorage.token;
+    let gallery = document.querySelector(".portfolio__gallery");
+    let img = document.querySelector("modal__section__add__form img");
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         let formData = new FormData(form);
-        let data = Object.fromEntries(formData);
 
         fetch("http://localhost:5678/api/works", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 Authorization: `Bearer ${authToken}`,
             },
-            body: data,
+            body: formData,
         })
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
                 displayWorksModal();
+                gallery.innerHTML = "";
                 displayWorks();
             })
             .catch((error) => console.log(error));
     });
 }
 postMethodImg();
+
+async function validationAddWork() {
+    let button = document.querySelector(".valid__button");
+    let form = document.querySelector(".modal__section__add__form");
+    let inputPreview = document.querySelector(".modal__section__add__form #file");
+    let title = document.querySelector(".modal__section__add__form #title");
+    let previewImg = document.querySelector(".modal__section__add__form__preview img");
+    let labelFile = document.querySelector(".modal__section__add__form__preview label");
+    let i = document.querySelector(".modal__section__add__form__preview .fa-image");
+    let p = document.querySelector(".modal__section__add__form__preview p");
+
+    form.addEventListener("input", () => {
+        if (inputPreview.value !== "" && title.value !== "") {
+            button.disabled = false;
+            button.classList.add("valid__form__button");
+        } else {
+            button.disabled = true;
+            button.classList.remove("valid__form__button");
+        }
+    });
+
+    form.addEventListener("submit", () => {
+        form.reset();
+        previewImg.src = "";
+        previewImg.style.display = "none";
+        labelFile.style.display = "flex";
+        i.style.display = "flex";
+        p.style.display = "flex";
+    });
+}
+validationAddWork();
