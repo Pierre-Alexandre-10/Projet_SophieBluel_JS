@@ -322,7 +322,6 @@ function postMethodImg() {
     let form = document.querySelector(".modal__section__add__form");
     let authToken = window.sessionStorage.token;
     let gallery = document.querySelector(".portfolio__gallery");
-    let img = document.querySelector("modal__section__add__form img");
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();

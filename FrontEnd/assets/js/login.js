@@ -8,8 +8,14 @@ async function login() {
     loginPage.classList.add(".login__page");
     form.addEventListener("submit", (e) => {
         e.preventDefault();
+
+        // Récupérer toutes les informations du formulaires
         let formData = new FormData(form);
+
+        // Convertir les informatrions en objet
         let data = Object.fromEntries(formData);
+
+        // Envoie des informations grâce au fetch
         fetch("http://localhost:5678/api/users/login", {
             // Méthode POST : une requête pour envoyerdes données
             // Headers : Préciser que le contenue sera du JSON (JavaScript Object Notation)
@@ -20,7 +26,6 @@ async function login() {
             },
             body: JSON.stringify(data),
         })
-            // Convertir la response reçu en JSON
             .then((response) => {
                 if (response.status == "401" || response.status == "404") {
                     errorMessage.textContent = "Email et/ou Mot de passe incorrect";
@@ -30,7 +35,6 @@ async function login() {
                     return response.json();
                 }
             })
-            // .then((data) => console.log(data))
             .then((data) => {
                 if (data.token && data.userId) {
                     window.sessionStorage.token = data.token;
